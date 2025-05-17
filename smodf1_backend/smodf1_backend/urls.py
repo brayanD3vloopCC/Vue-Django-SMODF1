@@ -15,11 +15,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
 from django.urls import path, include
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
+    path('api/', include('api.urls')),
+    path('api/usuarios/', include('usuarios.urls')),
+    path('api/users/', include('usuarios.urls')),  # Alias for usuarios
 ]
+
+# Servir archivos estáticos y de media durante desarrollo
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    # Añadir una ruta específica para los modelos 3D
+    urlpatterns += static('/models3d/', document_root=settings.MODELS3D_ROOT)

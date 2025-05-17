@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,10 +43,12 @@ INSTALLED_APPS = [
     'vision',
     'models3d',
     'api',
-    
+    'usuarios.apps.UsuariosConfig',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'smodf1_backend.middleware.CorsMiddleware',  # Nuestro middleware personalizado
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -53,13 +56,88 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'smodf1_backend.urls'
 
+# Configuración de CORS - permitir todas las peticiones por ahora
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+
+# Permitir subir archivos de mayor tamaño (hasta 50MB para modelos 3D)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50MB
+
+# Configuración para almacenamiento de medios (imágenes y modelos 3D)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Crear directorios de proyecto si no existen
+if not os.path.exists(MEDIA_ROOT):
+    os.makedirs(MEDIA_ROOT)
+    
+# Crear directorios para proyectos específicos
+for i in range(1, 10):  # Crear directorios para proyectos 1-9
+    project_dir = os.path.join(MEDIA_ROOT, f'project_{i}')
+    if not os.path.exists(project_dir):
+        os.makedirs(project_dir, exist_ok=True)
+        
+    # Crear subdirectorios para imágenes y procesados
+    images_dir = os.path.join(project_dir, 'images')
+    processed_dir = os.path.join(project_dir, 'processed')
+    
+    if not os.path.exists(images_dir):
+        os.makedirs(images_dir, exist_ok=True)
+    if not os.path.exists(processed_dir):
+        os.makedirs(processed_dir, exist_ok=True)
+
+# Directorios adicionales para modelos 3D
+MODELS3D_ROOT = os.path.join(BASE_DIR, 'models3d')
+if not os.path.exists(MODELS3D_ROOT):
+    os.makedirs(MODELS3D_ROOT)
+
+# Convertir esta configuración en más permisiva durante desarrollo
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080", #vue
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
+
+# Agregar orígenes adicionales 
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
+
+# Agregar comodín para aceptar cualquier origen en desarrollo
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
 ]
 
 TEMPLATES = [ 
@@ -132,4 +210,28 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Configuración del modelo de usuario personalizado
+AUTH_USER_MODEL = 'usuarios.Usuario'
 
+# Configuración de REST Framework
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+}
+
+
+AUTHENTICATION_BACKENDS = [
+    'usuarios.backends.CorreoBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
+# configuraciones de YOLO 
+
+#YOLO_WEIGHTS_PATH = 'path/to/yolo/weights.weights'
+#YOLO_CONFIG_PATH = 'path/to/yolo/config.cfg'
