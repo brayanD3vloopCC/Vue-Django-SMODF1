@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+:root {
+  --main-bg: #000000;
+  --main-text: #fff;
+  --accent-celeste: #a3c9e2;
+  --card-bg: #181a1b;
+  --border-celeste: 2px solid #a3c9e2;
+}
+
+body {
+  background: var(--main-bg);
+  color: var(--main-text);
+  font-family: 'Share Tech Mono', monospace;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+/* Scroll invisible */
+body::-webkit-scrollbar {
+  width: 0 !important;
+  background: transparent;
+}
+body {
+  scrollbar-width: none;
+}
+
+/* Títulos y subtítulos */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Share Tech Mono', monospace;
+  color: var(--main-text);
+  margin-top: 0;
+}
+
+/* Arte ASCII */
+.ascii-art {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 2.2rem;
+  color: var(--accent-celeste);
+  background: none;
+  text-align: center;
+  margin: 0 0 18px 0;
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  white-space: pre;
+  user-select: text;
+}
+
+/* Botones */
+.retro-button {
+  background: var(--accent-celeste);
+  color: var(--main-bg);
+  border: var(--border-celeste);
+  padding: 12px 28px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 8px;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(163,201,226,0.08);
+  margin: 0 8px;
+}
+.retro-button.primary {
+  background: var(--accent-celeste);
+  color: var(--main-bg);
+}
+.retro-button.secondary {
+  background: var(--main-bg);
+  color: var(--accent-celeste);
+  border: var(--border-celeste);
+}
+.retro-button:hover {
+  background: var(--main-text);
+  color: var(--main-bg);
+  border-color: var(--accent-celeste);
+}
+
+/* Cards y paneles */
+.feature-card, .retro-panel {
+  background: var(--card-bg);
+  border: var(--border-celeste);
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(163,201,226,0.10);
+  padding: 32px 28px;
+  color: var(--main-text);
+}
+
+/* Subtítulos y texto secundario */
+.main-subtitle, .retro-subtitle {
+  color: var(--accent-celeste);
+}
+
+/* Ajuste de márgenes para evitar separación excesiva */
+.hero, .main-title, .ascii-art {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* Eliminar decoraciones y efectos no usados */
+.scan-line, .glitch, .retro-grid, .blink, .retro-title, .retro-text {
+  display: none !important;
+}
+
+/* Responsive básico */
+@media (max-width: 900px) {
+  .ascii-art {
+    font-size: 1.2rem;
+  }
+  .main-title {
+    font-size: 2.2rem;
+  }
+} 
